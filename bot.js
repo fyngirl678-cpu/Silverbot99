@@ -5226,7 +5226,7 @@ Longest Word: "${stats.longestWord.word || 'N/A'}" (${stats.longestWord.length |
               isForwarded: true,
               forwardedNewsletterMessageInfo: {
                 newsletterJid: '120363407155737368@newsletter',
-                newsletterName: 'LUCA BOT ✔',
+                newsletterName: 'SILVER BOT',
                 serverMessageId: 127
               }
             }
@@ -5252,10 +5252,10 @@ Longest Word: "${stats.longestWord.word || 'N/A'}" (${stats.longestWord.length |
         if (command === "help") {
           await sock.sendMessage(message.key.remoteJid, {
             text: `╭───────────────────╮
-│    *LUCA BOT*     │
+│    *SILVER-BOT*     │
 ╰───────────────────╯
 
-👤 *Built by:* The Idle Developer
+👤 *Built by:* SILVER
 📌 *Version:* 1.0
 
 ┌─────── *FEATURES* ───────┐
