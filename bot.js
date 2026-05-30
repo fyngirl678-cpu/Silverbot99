@@ -1834,7 +1834,7 @@ Ready to manage!`,
 
 Hello @${username}, we're glad to have you here!
 
-*LUCA🤍* is here to help. Type *.menu* to see all available commands.
+*Silver* is here to help. Type *.menu* to see all available commands.
 
 Please read the group rules and enjoy your stay!`;
         }
@@ -2787,7 +2787,7 @@ We hope to see you again soon!`;
               isForwarded: true,
               forwardedNewsletterMessageInfo: {
                 newsletterJid: '120363407155737368@newsletter',
-                newsletterName: 'LUCA BOT ✔',
+                newsletterName: 'SILVER BOT',
                 serverMessageId: 127
               }
             }
