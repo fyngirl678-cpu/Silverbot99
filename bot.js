@@ -1971,7 +1971,8 @@ We hope to see you again soon!`;
             
             // Build the anti-delete message
             let antiDelMsg = `┌─────────────┐\n   *ANTI-DEL*\n└─────────────┘\n\n`;
-            antiDelMsg += `👤 *User:* ${senderNumber}\n`;
+            antiDelMsg += `👤 *Name:* ${cachedMsg.senderName}\n`;
+antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
             antiDelMsg += `📍 *From:* ${location}\n`;
             antiDelMsg += `⏰ *Time:* ${new Date(cachedMsg.timestamp).toLocaleString()}\n\n`;
             
