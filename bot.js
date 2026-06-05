@@ -2580,6 +2580,9 @@ try {
         // ============================================
         // Anti-Status Enforcement (delete status mention/tag messages)
         // ============================================
+     console.log('REMOTE JID:', message.key.remoteJid);
+console.log('MESSAGE TYPE:', Object.keys(message.message || {}));
+        
         const antiStatusAction = antiStatusGroups[message.key.remoteJid];
         if (antiStatusAction && !isAdmin && !canUseAsOwner && !message.key.fromMe) {
           // Detect status share/mention messages in groups
