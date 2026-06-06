@@ -2143,7 +2143,11 @@ try {
 
       const isGroup = message.key.remoteJid.endsWith("@g.us");
       const isDM = !isGroup;
-      let sender = message.key.participant || message.key.remoteJid;
+      let sender =
+  message.key.remoteJidAlt ||
+  message.key.participantAlt ||
+  message.key.participant ||
+  message.key.remoteJid;
       const myJid = sock.user.id;
       const isSender = sender === myJid;
 
