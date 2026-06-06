@@ -2168,7 +2168,7 @@ try {
         const messageId = message.key.id;
         const cacheData = {
   id: messageId,
-  sender: sender,
+  sender: displaySender,
   senderName: message.pushName || "Unknown",
   remoteJid: message.key.remoteJid,
   text: text,
