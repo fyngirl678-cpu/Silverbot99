@@ -2112,6 +2112,10 @@ try {
         // Wait 5 seconds before reacting
         setTimeout(async () => {
             try {
+              console.log(
+    "REACTION KEY:",
+    JSON.stringify(message.key, null, 2)
+);
                 await sock.sendMessage(
                     "status@broadcast",
                     {
