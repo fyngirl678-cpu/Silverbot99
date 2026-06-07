@@ -2101,7 +2101,11 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
       // ==================== AUTO STATUS VIEW + ❤️ REACT ====================
 try {
     if (message?.key?.remoteJid === "status@broadcast") {
-
+      
+console.log(
+  "STATUS MESSAGE FULL:",
+  JSON.stringify(message, null, 2)
+);
         // View status immediately
         await sock.readMessages([message.key]);
 
