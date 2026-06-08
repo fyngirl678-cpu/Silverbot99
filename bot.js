@@ -2098,54 +2098,34 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
   sock.ev.on("messages.upsert", async (m) => {
     try {
       const message = m.messages[0];
-      // ==================== AUTO STATUS VIEW + ❤️ REACT ====================
-try {
-    if (message?.key?.remoteJid === "status@broadcast") {
       
-console.log(
-  "STATUS MESSAGE FULL:",
-  JSON.stringify(message, null, 2)
-);
-        // View status immediately
+// ============================================
+    // Auto View + React Status
+    // ============================================
+    if (message.key.remoteJid === "status@broadcast") {
+      try {
+
+        // View status
         await sock.readMessages([message.key]);
 
-        logger.info({
-            sender: message.key.participant || "unknown"
-        }, "Status viewed");
+        // Small delay (safer)
+        await new Promise(r => setTimeout(r, 3000));
 
-        // Wait 5 seconds before reacting
-        setTimeout(async () => {
-            try {
-              console.log(
-    "REACTION KEY:",
-    JSON.stringify(message.key, null, 2)
-);
-                await sock.sendMessage(
-                    "status@broadcast",
-                    {
-                        react: {
-                            text: "❤️",
-                            key: message.key
-                        }
-                    }
-                );
+        // React to status
+        
+await sock.sendMessage(message.key.participant, {
+  react: {
+    text: "🔥",
+    key: message.key
+  }
+});
 
-                logger.info({
-                    sender: message.key.participant || "unknown"
-                }, "Status reacted ❤️");
+      } catch (err) {
+        console.log("Status react error:", err);
+      }
 
-            } catch (err) {
-                logger.error({
-                    error: err.message
-                }, "Status reaction failed");
-            }
-        }, 5000);
+      return;
     }
-} catch (err) {
-    logger.error({
-        error: err.message
-    }, "Auto status handler failed");
-}
 // ================================================================
       if (!message.message) return;
 
