@@ -2099,34 +2099,71 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
     try {
       const message = m.messages[0];
       
-// ============================================
-    // Auto View + React Status
-    // ============================================
-    if (message.key.remoteJid === "status@broadcast") {
-      try {
+// ==================== AUTO STATUS VIEW + 💞 REACT ====================
+try {
+    if (message?.key?.remoteJid === "status@broadcast") {
+
+        console.log(
+            "STATUS RECEIVED:",
+            JSON.stringify(message.key, null, 2)
+        );
 
         // View status
         await sock.readMessages([message.key]);
 
-        // Small delay (safer)
-        await new Promise(r => setTimeout(r, 3000));
+        logger.info({
+            sender:
+                message.key.remoteJidAlt ||
+                message.key.participantAlt ||
+                message.key.participant ||
+                "unknown"
+        }, "Status viewed");
 
-        // React to status
-        
-await sock.sendMessage(message.key.participant, {
-  react: {
-    text: "🔥",
-    key: message.key
-  }
-});
+        // Wait before reacting
+        setTimeout(async () => {
+            try {
 
-      } catch (err) {
-        console.log("Status react error:", err);
-      }
+                console.log(
+                    "REACTION TARGET:",
+                    JSON.stringify(message.key, null, 2)
+                );
 
-      return;
+                await sock.sendMessage(
+                    "status@broadcast",
+                    {
+                        react: {
+                            text: "💞",
+                            key: message.key
+                        }
+                    }
+                );
+
+                logger.info({
+                    sender:
+                        message.key.remoteJidAlt ||
+                        message.key.participantAlt ||
+                        message.key.participant ||
+                        "unknown"
+                }, "Status reacted 💞");
+
+            } catch (err) {
+
+                logger.error({
+                    error: err?.message,
+                    stack: err?.stack
+                }, "Status reaction failed");
+
+            }
+        }, 3000);
     }
-// ================================================================
+} catch (err) {
+
+    logger.error({
+        error: err?.message,
+        stack: err?.stack
+    }, "Auto status handler failed");
+
+}
       if (!message.message) return;
 
       const isGroup = message.key.remoteJid.endsWith("@g.us");
