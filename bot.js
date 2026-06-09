@@ -2101,8 +2101,14 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
       
 // ==================== AUTO STATUS VIEW + 💞 REACT ====================
 try {
-    if (message?.key?.remoteJid === "status@broadcast") {
-
+    if (
+    message?.key?.remoteJid === "status@broadcast" &&
+    !message?.key?.fromMe
+) {
+      console.log(
+    "STATUS TYPE:",
+    Object.keys(message.message || {})
+);
         console.log(
             "STATUS RECEIVED:",
             JSON.stringify(message.key, null, 2)
