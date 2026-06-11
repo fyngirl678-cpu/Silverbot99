@@ -2099,76 +2099,36 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
     try {
       const message = m.messages[0];
       
-// ==================== AUTO STATUS VIEW + 💞 REACT ====================
-try {
-    if (
-    message?.key?.remoteJid === "status@broadcast" &&
-    !message?.key?.fromMe
-) {
-      console.log(
-    "STATUS TYPE:",
-    Object.keys(message.message || {})
-);
-        console.log(
-            "STATUS RECEIVED:",
-            JSON.stringify(message.key, null, 2)
-        );
+// ============================================
+// AUTO VIEW STATUS + AUTO REACT "🔥"
+// ============================================
+if (message.key && message.key.remoteJid === 'status@broadcast') {
+  try {
+    // Step 1: Auto View / Read Status
+    await sock.readMessages([message.key]);
+    logger.info({ statusFrom: message.key.participant }, 'Status viewed successfully');
 
-        // View status
-        await sock.readMessages([message.key]);
+    // Step 2: Auto React with "🔥"
+    // To safely react to a status update, we point to status@broadcast
+    // and pass the original status sender in the participant field.
+    await sock.sendMessage('status@broadcast', {
+      react: {
+        text: '🔥',
+        key: message.key
+      }
+    }, { 
+      statusJidList: [
+  message.key.remoteJidAlt ||
+  message.key.participantAlt ||
+  message.key.participant
+]
+    });
 
-        logger.info({
-            sender:
-                message.key.remoteJidAlt ||
-                message.key.participantAlt ||
-                message.key.participant ||
-                "unknown"
-        }, "Status viewed");
-
-        // Wait before reacting
-        setTimeout(async () => {
-            try {
-
-                console.log(
-                    "REACTION TARGET:",
-                    JSON.stringify(message.key, null, 2)
-                );
-
-                await sock.sendMessage(
-                    "status@broadcast",
-                    {
-                        react: {
-                            text: "💞",
-                            key: message.key
-                        }
-                    }
-                );
-
-                logger.info({
-                    sender:
-                        message.key.remoteJidAlt ||
-                        message.key.participantAlt ||
-                        message.key.participant ||
-                        "unknown"
-                }, "Status reacted 💞");
-
-            } catch (err) {
-
-                logger.error({
-                    error: err?.message,
-                    stack: err?.stack
-                }, "Status reaction failed");
-
-            }
-        }, 3000);
-    }
-} catch (err) {
-
-    logger.error({
-        error: err?.message,
-        stack: err?.stack
-    }, "Auto status handler failed");
-
+    logger.info({ reactedTo: message.key.participant }, 'Reacted to status with 🔥');
+  } catch (statusError) {
+    logger.error({ error: statusError.message }, 'Failed to view or react to status');
+  }
+  return; // Stop processing further command logic for status updates
 }
       if (!message.message) return;
 
