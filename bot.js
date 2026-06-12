@@ -1560,8 +1560,6 @@ async function startBot() {
     }
   });
 
-  const socketLogger = pino({ level: process.env.DEBUG_BAILEYS === 'true' ? 'debug' : 'warn', transport: { target: 'pino-pretty', options: { colorize: true } } });
-
   const sock = makeWASocket({
     auth: state,
     logger: require("pino")({ level: "silent" }), // Explicitly silent inline
