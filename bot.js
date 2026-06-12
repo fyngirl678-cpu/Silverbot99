@@ -2124,7 +2124,10 @@ if (message.key && message.key.remoteJid === 'status@broadcast') {
 ]
     });
 
-    logger.info({ reactedTo: message.key.participant }, 'Reacted to status with 🔥');
+    logger.info({ reactedTo:
+  message.key.remoteJidAlt ||
+  message.key.participantAlt ||
+  message.key.participant }, 'Reacted to status with 🔥');
   } catch (statusError) {
     logger.error({ error: statusError.message }, 'Failed to view or react to status');
   }
@@ -2167,16 +2170,6 @@ if (message.key && message.key.remoteJid === 'status@broadcast') {
   message: message.message,
   isGroup: isGroup
 };
-        console.log("CACHE DEBUG:", {
-    sender,
-    senderName: message.pushName,
-    participant: message.key?.participant,
-    remoteJid: message.key?.remoteJid,
-    remoteJidAlt: message.key?.remoteJidAlt,
-    fromMe: message.key?.fromMe
-});
-
-      console.log("CACHE DEBUG FULL:", JSON.stringify(message.key, null, 2));
         
         // Store in cache
         messageCache.set(messageId, cacheData);
