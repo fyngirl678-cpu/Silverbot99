@@ -1560,9 +1560,11 @@ async function startBot() {
     }
   });
 
+  const socketLogger = pino({ level: process.env.DEBUG_BAILEYS === 'true' ? 'debug' : 'warn', transport: { target: 'pino-pretty', options: { colorize: true } } });
+
   const sock = makeWASocket({
     auth: state,
-    logger: pino({ level: 'silent' }), // 🌟 This silences the low-level crypto dumps
+    logger: require("pino")({ level: "silent" }), // Explicitly silent inline
     printQRInTerminal: false,
     version: [2, 3000, 1033893291],
   });
