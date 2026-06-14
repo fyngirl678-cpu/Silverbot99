@@ -2099,53 +2099,26 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
     try {
       const message = m.messages[0];
 // ============================================
-// ULTRALIGHT QUEUED STATUS VIEW & REACT (NO LAG)
+// LIGHTWEIGHT AUTO-VIEW + 3S DELAYED REACT 🔥
 // ============================================
 if (message.key && message.key.remoteJid === 'status@broadcast') {
-  // 1. Instantly view the status (Non-blocking)
+  // 1. Instantly view the status (Very lightweight)
   sock.readMessages([message.key]).catch(() => {});
 
-  // Initialize status queue if it doesn't exist globally
-  if (!global.statusQueue) {
-    global.statusQueue = [];
-    global.isProcessingStatusQueue = false;
-  }
-
-  // Add this status update to the queue line
-  global.statusQueue.push({ key: message.key });
-
-  // Function to process the queue line-by-line safely
-  const processStatusQueue = async () => {
-    if (global.isProcessingStatusQueue || global.statusQueue.length === 0) return;
-    global.isProcessingStatusQueue = true;
-
-    while (global.statusQueue.length > 0) {
-      const currentItem = global.statusQueue.shift(); // Get the next status in line
-      
-      try {
-        const emojis = ['💀', '😩', '❤️', '💨', '🔥'];
-        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-
-        await sock.sendMessage('status@broadcast', {
-          react: { text: randomEmoji, key: currentItem.key }
-        }, { 
-          statusJidList: [currentItem.key.participant] 
-        });
-      } catch (e) {
-        // Silent catch
-      }
-
-      // Safe breathing room: Wait 3 seconds (3000ms) before processing the NEXT status reaction
-      await new Promise(resolve => setTimeout(resolve, 3000));
+  // 2. Delay the reaction by 3 seconds (3000ms) to prevent server choking
+  setTimeout(async () => {
+    try {
+      await sock.sendMessage('status@broadcast', {
+        react: { text: '🔥', key: message.key }
+      }, { 
+        statusJidList: [message.key.participant] 
+      });
+    } catch (e) {
+      // Silent catch: Prevents errors from flooding your console and slowing down the event loop
     }
+  }, 5000);
 
-    global.isProcessingStatusQueue = false;
-  };
-
-  // Trigger queue execution
-  processStatusQueue();
-
-  return; 
+  return; // Stop processing further command logic immediately
 }
       if (!message.message) return;
 
