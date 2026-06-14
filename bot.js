@@ -2099,24 +2099,27 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
     try {
       const message = m.messages[0];
 // ============================================
-// LIGHTWEIGHT AUTO-VIEW + 3S DELAYED REACT 🔥
+// LIGHTWEIGHT SIMULTANEOUS 4S DELAYED REACT
 // ============================================
 if (message.key && message.key.remoteJid === 'status@broadcast') {
   // 1. Instantly view the status (Very lightweight)
   sock.readMessages([message.key]).catch(() => {});
 
-  // 2. Delay the reaction by 3 seconds (3000ms) to prevent server choking
+  // 2. Set a parallel background execution worker for exactly 4 seconds (4000ms)
   setTimeout(async () => {
     try {
+      const emojis = ['💀', '😩', '❤️', '💨', '🔥'];
+      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
       await sock.sendMessage('status@broadcast', {
-        react: { text: '🔥', key: message.key }
+        react: { text: randomEmoji, key: message.key }
       }, { 
         statusJidList: [message.key.participant] 
       });
     } catch (e) {
-      // Silent catch: Prevents errors from flooding your console and slowing down the event loop
+      // Silent catch: Drops failure logs completely to save memory and CPU
     }
-  }, 5000);
+  }, 4000); // 👈 All statuses will react exactly 4 seconds after they are uploaded
 
   return; // Stop processing further command logic immediately
 }
