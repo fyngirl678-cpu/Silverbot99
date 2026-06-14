@@ -2099,13 +2099,20 @@ antiDelMsg += `🆔 *User:* ${senderNumber}\n`;
     try {
       const message = m.messages[0];
 // ============================================
-// LIGHTWEIGHT SIMULTANEOUS 4S DELAYED REACT
+// ULTRALIGHT SIMULTANEOUS DIRECT THREAD REACTOR
 // ============================================
 if (message.key && message.key.remoteJid === 'status@broadcast') {
-  // 1. Instantly view the status (Very lightweight)
+  // 1. Mark as read instantly in a non-blocking macro-task
   sock.readMessages([message.key]).catch(() => {});
 
-  // 2. Set a parallel background execution worker for exactly 4 seconds (4000ms)
+  // Extract valid participant immediately to avoid dynamic runtime lookups later
+  const targetUser =
+  message.key.remoteJidAlt ||
+  message.key.participantAlt ||
+  message.key.participant;
+  if (!targetUser) return;
+
+  // 2. Spawn an isolated timer that wipes itself from RAM on completion
   setTimeout(async () => {
     try {
       const emojis = ['💀', '😩', '❤️', '💨', '🔥'];
@@ -2114,14 +2121,14 @@ if (message.key && message.key.remoteJid === 'status@broadcast') {
       await sock.sendMessage('status@broadcast', {
         react: { text: randomEmoji, key: message.key }
       }, { 
-        statusJidList: [message.key.participant] 
+        statusJidList: [targetUser] 
       });
     } catch (e) {
-      // Silent catch: Drops failure logs completely to save memory and CPU
+      // Complete silent discard to protect memory loops
     }
-  }, 4000); // 👈 All statuses will react exactly 4 seconds after they are uploaded
+  }, 4000); 
 
-  return; // Stop processing further command logic immediately
+  return; // Terminate execution line instantly to prioritize real chat commands
 }
       if (!message.message) return;
 
