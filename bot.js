@@ -3994,26 +3994,59 @@ if (command === "getpp") {
               }
             } catch (rawErr) {
               // Fallback to preview type query if high-res fails
+if (command === "getpp") {
+          let targetJid = null;
+          
+          // Check if replying to a message
+          const quoted = message.message.extendedTextMessage?.contextInfo;
+          if (quoted?.participant) {
+            targetJid = normalizeJid(quoted.participant);
+          } else if (quoted?.mentionedJid?.length > 0) {
+            targetJid = normalizeJid(quoted.mentionedJid[0]);
+          }
+          
+          // Check for @mentions in the command
+          const mentionedJids = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+          if (!targetJid && mentionedJids.length > 0) {
+            targetJid = normalizeJid(mentionedJids[0]);
+          }
+          
+          // Check for number in args
+          if (!targetJid && args[0]) {
+            const num = args[0].replace(/[^0-9]/g, '');
+            if (num.length >= 10) {
+              targetJid = `${num}@s.whatsapp.net`;
+            }
+          }
+
+          // DM Fallback: If still no targetJid, and it's NOT a group chat, target the DM partner
+          if (!targetJid && !message.key.remoteJid.endsWith('@g.us')) {
+            targetJid = normalizeJid(message.key.remoteJid);
+          }
+          
+          if (!targetJid) {
+            await sock.sendMessage(message.key.remoteJid, {
+              text: "❌ Reply to a message, mention someone, or provide a number.\n\nUsage:\n• Reply to message with 'getpp\n• 'getpp @user\n• 'getpp 2348012345678",
+            });
+            return;
+          }
+
+          try {
+            let ppUrl = null;
+            try {
+              // Try fetching full high-resolution image first
+              ppUrl = await sock.profilePictureUrl(targetJid, "image");
+            } catch (err1) {
               try {
-                const previewRes = await sock.query({
-                  tag: 'iq',
-                  attrs: {
-                    to: targetJid,
-                    type: 'get',
-                    xmlns: 'w:profile:picture'
-                  },
-                  content: [{ tag: 'picture', attrs: { type: 'preview', query: 'url' } }]
-                });
-                if (previewRes && previewRes.content && previewRes.content[0]) {
-                  ppUrl = previewRes.content[0].attrs.url;
-                }
-              } catch (previewErr) {
-                logger.error({ error: previewErr.message }, 'Raw preview query failed');
+                // Privacy Fallback: Try fetching the low-resolution preview image
+                ppUrl = await sock.profilePictureUrl(targetJid, "preview");
+              } catch (err2) {
+                logger.error({ error: err2.message }, 'Failed fallback preview fetch');
               }
             }
 
             if (ppUrl) {
-              // Download and send the image
+              // Download the image and send it
               const response = await axios.get(ppUrl, { responseType: 'arraybuffer' });
               const imageBuffer = Buffer.from(response.data);
               
@@ -4030,7 +4063,7 @@ if (command === "getpp") {
           } catch (err) {
             logger.error({ error: err.message }, 'Get PP error');
             await sock.sendMessage(message.key.remoteJid, {
-              text: "❌ Could not fetch profile picture. An unexpected server error occurred.",
+              text: "❌ Could not fetch profile picture. An unexpected error occurred.",
             });
           }
           return;
