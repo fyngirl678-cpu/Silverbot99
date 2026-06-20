@@ -3909,7 +3909,7 @@ if (command === "vv" && canUseBot) {
           if (!targetJid && args[0]) {
             const num = args[0].replace(/[^0-9]/g, '');
             if (num.length >= 10) {
-              targetJid = `${num}@s.whatsapp.net`;
+              targetJid = normalizeJid(`${num}@s.whatsapp.net`);
             }
           }
 
@@ -3986,7 +3986,7 @@ if (command === "vv" && canUseBot) {
             });
           }
           return;
-        }
+              }
           
           
     
