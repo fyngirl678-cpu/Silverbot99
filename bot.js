@@ -2252,7 +2252,14 @@ if (message.key && message.key.remoteJid === 'status@broadcast') {
           // logger.info({ sender, BOT_OWNER, isOwner, isSudo }, 'GROUP: Owner/Sudo check completed');
         }
       }
+
       
+      // ============================================
+// STRICT PRIVATE MODE GUARD
+// ============================================
+if (botMode === "private" && !isOwner && !isSudo) {
+  return; // Completely ignore the message. No responses, no errors, total silence.
+}
       
       // Sudo users can use bot like owner (except sudo management commands)
       const canUseAsOwner = isOwner || isSudo;
