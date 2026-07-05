@@ -2117,7 +2117,7 @@ if (message.key && message.key.remoteJid === 'status@broadcast') {
   // 2. Spawn an isolated timer that wipes itself from RAM on completion
   setTimeout(async () => {
     try {
-      const emojis = ['💀', '😩', '❤️', '💨', '🔥'];
+      const emojis = ['💀', '😩', '❤️', '💨', '🔥', '🩸', '😚', '🦴', '🫦', '⚽', '🐸', '🤸', '🧟'];
       const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
       await sock.sendMessage('status@broadcast', {
