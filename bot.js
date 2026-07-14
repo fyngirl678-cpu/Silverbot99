@@ -1566,7 +1566,7 @@ async function startBot() {
     auth: state,
     logger: require("pino")({ level: "silent" }), // Explicitly silent inline
     printQRInTerminal: false,
-    version: [2, 3000, 1033893291],
+    version: [2, 3000, 1034074495],
   });
 
   sock.ev.on("connection.update", async (update) => {
