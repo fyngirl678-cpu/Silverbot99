@@ -1556,6 +1556,9 @@ async function startBot() {
 
   const { state, saveCreds } = await useMultiFileAuthState("auth_info");
 
+const { version, isLatest } = await fetchLatestBaileysVersion();
+logger.info({ version, isLatest }, "Using WhatsApp Web version");
+
   const socketLogger = pino({ 
     level: process.env.DEBUG_BAILEYS === 'true' ? 'debug' : 'warn',
     transport: {
