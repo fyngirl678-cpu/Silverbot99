@@ -1691,7 +1691,7 @@ Ready to manage!`,
         logger.error('Device logged out. Delete auth_info folder to reconnect.');
         process.exit(0);
       }
-      logger.info('Connection closed, reconnecting...');
+      logger.error(lastDisconnect?.error, 'Connection closed');
       setTimeout(() => startBot(), 3000);
     }
   });
