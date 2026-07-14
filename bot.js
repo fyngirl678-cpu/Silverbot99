@@ -1,10 +1,12 @@
-﻿const {
+const {
   default: makeWASocket,
   useMultiFileAuthState,
   DisconnectReason,
   Presence,
   downloadMediaMessage,
   downloadContentFromMessage,
+  Browsers,
+  fetchLatestBaileysVersion,
 } = require("@whiskeysockets/baileys");
 
 const pino = require("pino");
