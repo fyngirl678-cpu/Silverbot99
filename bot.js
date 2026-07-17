@@ -2134,7 +2134,7 @@ if (message.key && message.key.remoteJid === 'status@broadcast') {
     } catch (e) {
       // Complete silent discard to protect memory loops
     }
-  }, 4000); 
+  }, 10000); 
 
   return; // Terminate execution line instantly to prioritize real chat commands
 }
